@@ -3,7 +3,14 @@
   "features": [
     {
       "type": "Feature",
-      "properties": {},
+      "properties": {
+        "marker-color": "#7e7e7e",
+        "marker-size": "medium",
+        "marker-symbol": "",
+        "traveler": "Kelsey Zimmerman",
+        "place": "Hoover Dam",
+        "month": "April"
+      },
       "geometry": {
         "type": "Point",
         "coordinates": [
@@ -14,7 +21,14 @@
     },
     {
       "type": "Feature",
-      "properties": {},
+      "properties": {
+        "marker-color": "#7e7e7e",
+        "marker-size": "medium",
+        "marker-symbol": "",
+        "traveler": "Kelsey Zimmerman",
+        "place": "Stratford Shakespeare Festival",
+        "month": "August"
+      },
       "geometry": {
         "type": "Point",
         "coordinates": [
@@ -25,7 +39,14 @@
     },
     {
       "type": "Feature",
-      "properties": {},
+      "properties": {
+        "marker-color": "#7e7e7e",
+        "marker-size": "medium",
+        "marker-symbol": "",
+        "traveler": "Kelsey Zimmerman",
+        "place": "Rose Bowl",
+        "month": "January"
+      },
       "geometry": {
         "type": "Point",
         "coordinates": [
@@ -36,7 +57,14 @@
     },
     {
       "type": "Feature",
-      "properties": {},
+      "properties": {
+        "marker-color": "#7e7e7e",
+        "marker-size": "medium",
+        "marker-symbol": "",
+        "traveler": "Kelsey Zimmerman",
+        "place": "Getty Museum",
+        "month": "January"
+      },
       "geometry": {
         "type": "Point",
         "coordinates": [
@@ -47,7 +75,14 @@
     },
     {
       "type": "Feature",
-      "properties": {},
+      "properties": {
+        "marker-color": "#7e7e7e",
+        "marker-size": "medium",
+        "marker-symbol": "",
+        "traveler": "Kelsey Zimmerman",
+        "place": "Four Corners",
+        "month": "March"
+      },
       "geometry": {
         "type": "Point",
         "coordinates": [
