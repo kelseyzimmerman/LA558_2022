@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<!--
+Created using JS Bin
+http://jsbin.com
+
+Copyright (c) 2022 by anonymous (http://jsbin.com/qiwewazita/1/edit)
+
+Released under the MIT license: http://jsbin.mit-license.org
+-->
+<meta name="robots" content="noindex">
+<html>
+  <head>
+    <title>"Average Marrying Age"</title>
+<meta name="description" content="LA 558 GeoJSON into Leaflet version 2 - 2022" />
+
+	<link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" /> <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+	  
+	<script src="https://profseeger.github.io/LVM-Code/classes/leaflet-ajax-gh-pages/dist/leaflet.ajax.min.js"></script>
+	  
+  <style id="jsbin-css">
+html, body, 
+
+#map { height: 500px; margin: 0; padding: 0; }
+
+
+.legend {
+    line-height: 10px;
+    color: #555;
+}
+.legend i {
+    width: 18px;
+    height: 20px;
+    float: left;
+    margin-right: 8px;
+    opacity: 0.9;
+}
+.info {
+    padding: 6px 8px;
+    font: 10px/20px Arial, Helvetica, sans-serif;
+    background: rgba(255,255,255,0.8);
+    box-shadow: 0 0 15px rgba(0,0,0,0.2);
+    border-radius: 5px;
+
+}
+.info h4 {
+    margin: 0 0 5px;
+    color: #777;
+}
+
+.info { padding: 6px 8px; font: 14px/16px Arial, Helvetica, sans-serif; background: white; background: rgba(255,255,255,0.8); box-shadow: 0 0 15px rgba(0,0,0,0.2); border-radius: 5px; } .info h4 { margin: 0 0 5px; color: #777; }
+
+.legend { text-align: left; line-height: 18px; color: #555; } .legend i { width: 18px; height: 18px; float: left; margin-right: 8px; opacity: 0.7; }
+</style>
+</head>
+  <body>
+<div id="map"></div>
+  <script id="jsbin-javascript">
+console.clear();
+
+var map = L.map('map').setView([39.8, -98.5], 4);
+
+// add an OpenStreetMap tile layer
+var osm = L.tileLayer('https://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+  attribution: '&copy; <a href="https://osm.org/copyright">OpenStreetMap</a> contributors',
+  maxZoom: 18
+}).addTo(map);
+
+
+//set color of marker
+function getColor(d) {
+  return d <= '26' ? '#edf8fb' :
+    d <= '28' ? "#bfd3e6" :
+   d <= '29' ? "#9ebcda" :
+    d <= '30' ? "#8c96c6" :
+  d <= '31' ? "#8856a7" :
+    d <= '32' ? "#810f7c" :
+    "#000"; //black
+}
+
+
+function style(feature) {
+    return {
+        fillColor: getColor(feature.properties.estimate),
+        weight: 1,
+        opacity: .8,
+        color: 'white',
+        dashArray: '2',
+        fillOpacity: 0.7
+    };
+}
+
+
+url = "https://kelseyzimmerman.github.io/LA558_2022/web/marriageAge.geojson";
+
+var geojsonLayer = new L.GeoJSON.AJAX(url , {
+	style: style,
+	onEachFeature: function (feature, layer) {
+          htmlText = "<strong>" + feature.properties.STATE_NAME + "</strong><br>" +
+            "Average Male Marrying Age: " + feature.properties.estimate + "<br>"+
+            "Margin of Error: " + feature.properties.moe + "<br>";
+        layer.bindPopup(htmlText);
+		layer.bindTooltip(feature.properties.STATE_NAME);
+    }
+}).addTo(map);
+
+
+</script>
+</body>
+</html>
