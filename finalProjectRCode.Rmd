@@ -1,0 +1,219 @@
+---
+title: "AmesInteractiveMaps"
+author: "Kelsey Zimmerman"
+date: '2022-04-26'
+output: html_document
+---
+
+## Interactive Web Map Stuff
+
+```{r}
+library(leaflet)
+library(ggmap)
+library(sf)
+library(rgdal)
+library(geojsonsf)
+library(tmap)
+```
+
+then...
+
+```{r}
+map1 <- leaflet(data = cds, options = leafletOptions(
+                  # Set minZoom and dragging
+  # dragging = false sets limit of screen
+                    minZoom = 15, dragging = TRUE)) %>%
+  addProviderTiles("OpenStreetMap") %>%
+  setView(lng = -93.660,
+  lat = 42.041,
+  zoom = 16) %>%
+  addPolygons(label = ~Name,
+              stroke = FALSE,
+              smoothFactor = 0.4,
+              fillOpacity = 1,
+              fillColor = "#de2d26",
+              popup = ~Name)
+```
+
+omg
+
+```{r}
+#make marker
+wmicon <- makeIcon("C:/Users/kelzi/Documents/ArcGIS/Projects/AmesChemLabDisposal/watertest.png",
+                   iconWidth = 35,
+                   iconHeight = 28,
+                   iconAnchorX = 34,
+                   iconAnchorY = 25)
+```
+
+```{r}
+map2 <- leaflet(data = mwp, options = leafletOptions(
+                  # Set minZoom and dragging
+  # dragging = false sets limit of screen
+                    minZoom = 14, dragging = TRUE)) %>%
+  addProviderTiles("OpenStreetMap") %>%
+  setView(lng = -93.660,
+  lat = 42.041,
+  zoom = 16) %>%
+  addCircleMarkers(radius = 3,
+                   label = ~Well_ID,
+                   color = "##c51b8a",
+                   weight = 4,
+                   stroke = TRUE,
+                   opacity = 0.9,
+                   fill = TRUE,
+                   fillColor = "#fa9fb5",
+                   fillOpacity = 1,
+                   popup = ~Well_ID)
+# to save use maptools::mapshot
+# mapshot(map2, "map2.html")
+```
+
+# to search tiles --
+
+```{r}
+# names(providers)
+# TO SAVE GEOSPATIAL OBJECTS
+## mwp <- rgdal::readOGR("C:/Users/kelzi/Documents/ArcGIS/Projects/AmesChemLabDisposal/monitoringWellPoints_Featu.geojson")
+```
+
+# change tiles
+
+```{r}
+#from Datacamp
+# Print the providers list included in the leaflet library
+providers
+
+# Print only the names of the map tiles in the providers list 
+names(providers)
+
+# Use str_detect() to determine if the name of each provider tile contains the string "CartoDB"
+str_detect(names(providers), "CartoDB")
+
+# Use str_detect() to print only the provider tile names that include the string "CartoDB"
+names(providers)[str_detect(names(providers), "CartoDB")]
+```
+
+Step 2
+
+```{r}
+# Change addTiles() to addProviderTiles() and set the provider argument to "CartoDB"
+leaflet() %>% 
+    addProviderTiles(provider = "CartoDB")
+# remove data
+m <- m  %>% 
+        addMarkers(lng = dc_hq$lon, lat = dc_hq$lat) %>% 
+        setView(lat = 50.9, lng = 4.7, zoom = 5)
+
+m  %>% 
+    clearMarkers() %>% 
+    clearBounds()
+# 
+# The sector_label column in the ipeds data frame indicates whether a college is public, private, or for-profit. In the console, use the group_by() and the count() functions from the dplyr package to determine which sector of college is most common.
+# 
+# The tidyverse package, which includes dplyr, has been loaded for you. In your workspace, you also have access to the ipeds dataframe.
+# Search data example
+ipeds %>% group_by(sector_label) %>% count()
+# Create a dataframe called `ca` with data on only colleges in California
+ca <- ipeds %>%
+        filter(state == "CA")
+
+# Use `addMarkers` to plot all of the colleges in `ca` on the `m` leaflet map
+map %>%
+    addMarkers(lng = ca$lng, lat = ca$lat)
+# Set the zoom level to 8 and store in the m object
+map_zoom <-
+    map %>%
+    addMarkers(data = ca) %>%
+     setView(lat = la_coords$lat, lng = la_coords$lon, zoom = 8)
+
+map_zoom
+# CSS colors: https://www.w3schools.com/cssref/css_colors.asp
+```
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>. 4 When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r}
+#tmap stuff
+bigShp <- readOGR("C:/Users/kelzi/Documents/ArcGIS/Projects/AmesChemLabDisposal/cds_geodaFIN.shp")
+bigSF <- st_as_sf(bigShp)
+```
+
+```{r}
+tmap_mode("view")
+popEst <- tm_shape(bigSF) +
+tm_polygons(col = "PopEst",
+            alpha = 0.7,
+            n = 5,
+            style = "jenks",
+            palette = "Purples",
+            area = "Shape_Area",
+            colorNA = NULL,
+            title = "Estimated Population, 2020",
+            id = "NAME",
+            pop.vars = "NAME"
+) +
+  tm_layout(title = "Census Block Groups within 3 Miles of the Ames Chemical Disposal Site",
+            title.size = 3,
+            bg.color = "grey85",
+            ) +
+  tm_view(view.legend.position = c("right", "bottom")) +
+  tm_basemap("OpenStreetMap")
+```
+```{r}
+tmap_mode("view")
+medianInc <- tm_shape(bigSF) +
+  tm_polygons(col = "MedianInc",
+            alpha = 0.7,
+            n = 5,
+            style = "jenks",
+            palette = "Greens",
+            area = "Shape_Area",
+            colorNA = NULL,
+            title = "Median Income, 2020",
+            id = "NAME",
+            pop.vars = "NAME"
+) +
+  tm_layout(title = "Census Block Groups within 3 Miles of the Ames Chemical Disposal Site",
+            title.size = 3,
+            bg.color = "grey85",
+            ) +
+
+  tm_view(view.legend.position = c("right", "bottom")) +
+            tm_basemap("OpenStreetMap")
+
+```
+
+
+## Building a Better Pop-up
+With the paste0() function and a few html tags, we can customize our popups. paste0() converts its arguments to characters and combines them into a single string without separating the arguments.
+
+addCircleMarkers(popup = ~paste0(name,
+                                 "<br/>",
+                                 sector_label))
+We can use the <br/> tag to create a line break to have each element appear on a separate line.
+
+To distinguish different data elements, we can make the name of each college italics by wrapping the name variable in <i></i>
+
+addCircleMarkers(popup = ~paste0("<i>",
+                                 name,
+                                 "</i>", 
+                                 "<br/>", 
+                                 sector_label))
+                                 
+# Use paste0 to add sector information to the label inside parentheses 
+map %>% 
+    addCircleMarkers(data = ca, radius = 2, label = ~paste0(name, " (", sector_label, ")"))
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
