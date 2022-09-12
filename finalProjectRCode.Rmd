@@ -129,6 +129,37 @@ map_zoom <-
 
 map_zoom
 # CSS colors: https://www.w3schools.com/cssref/css_colors.asp
+
+# Make a color palette called pal for the values of `sector_label` using `colorFactor()`  
+# Colors should be: "red", "blue", and "#9b4a11" for "Public", "Private", and "For-Profit" colleges, respectively
+pal <- colorFactor(palette = c("red", "blue", "#9b4a11"), 
+                   levels = c("Public", "Private", "For-Profit"))
+
+# Add circle markers that color colleges using pal() and the values of sector_label
+map2 <- 
+    map %>% 
+        addCircleMarkers(data = ca, radius = 2, 
+                         color = ~pal(sector_label), 
+                         label = ~paste0(name, " (", sector_label, ")"))
+
+# Print map2
+map2
+```
+Do not forget leaflet.extras package!
+  We can add private colleges exactly how we added public colleges. Then using the addLayersControl() function with the overlayGroups argument we can give our users the ability to display public and/or private colleges. The overlayGroups argument takes a vector of groups that we have defined while creating our layers (i.e., public and private). As a reminder, here is how we can add public colleges to our map as a layer:
+``` {r}
+# Create data frame called public with only public colleges
+public <- filter(ipeds, sector_label == "Public")  
+
+# Add public colleges as a layer and save map as `m3`
+m3 <- leaflet() %>% 
+        addProviderTiles("CartoDB") %>% 
+        addCircleMarkers(data = public, radius = 2, 
+                         label = ~htmlEscape(name),
+                         color = ~pal(sector_label),
+                         group = "Public") %>% 
+        addLayersControl(overlayGroups = c("Public"))
+The htmltools library, color palette pal and the m3 map with public colleges have been loaded for you.
 ```
 
 ```{r setup, include=FALSE}
